@@ -1,0 +1,43 @@
+# 此文档忽略
+version: "3"
+services: 
+  mongo-yapi:
+    image: mongo
+    container_name: mongo-yapi
+    expose: 
+      - "27017"
+    ports: 
+      - "27017:27017"
+    volumes: 
+      - 'mongo-one:/data/db:rw'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=zd_123
+    restart: always
+    networks:
+      - "net"
+
+  web-yapi:
+    image: zd-yapi
+    container_name: web-yapi
+    depends_on: 
+      - mongo-yapi
+    links: 
+      - mongo-yapi
+    expose: 
+      - "9527"
+    ports: 
+      - "9529:9527"
+    entrypoint:
+      - node
+      - server/app.js
+    networks:
+      - "net"
+
+volumes: 
+  mongo_data_yapi:
+    external: true
+
+networks:
+  net:
+    driver: bridge
